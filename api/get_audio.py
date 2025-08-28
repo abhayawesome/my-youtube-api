@@ -16,8 +16,8 @@ def get_audio_handler():
     youtube_url = f"https://www.youtube.com/watch?v={video_id}"
 
     try:
-        # --- THIS IS THE ONLY LINE THAT CHANGED ---
-        # We are telling pytubefix to act like a Web Browser to avoid bot detection.
+        # --- THIS IS THE REQUIRED FIX ---
+        # This tells pytubefix to act like a Web Browser to avoid bot detection.
         yt = YouTube(youtube_url, client='WEB')
         
         logging.info(f"Successfully created YouTube object for title: {yt.title}")
@@ -25,10 +25,8 @@ def get_audio_handler():
         audio_streams = yt.streams.filter(only_audio=True).order_by('abr').desc()
         
         if not audio_streams:
-            logging.warning(f"No audio-only streams found for video_id: {video_id}")
             return jsonify({"error": "No audio-only streams found for this video."}), 404
         
-        logging.info(f"Found {len(audio_streams)} audio streams. Preparing response...")
         formats = []
         for stream in audio_streams:
             bitrate_str = stream.abr if stream.abr else "0kbps"
@@ -40,7 +38,6 @@ def get_audio_handler():
                 "bitrate": bitrate_val
             })
         
-        logging.info("Successfully prepared formats. Sending JSON response.")
         return jsonify(formats)
 
     except Exception as e:
