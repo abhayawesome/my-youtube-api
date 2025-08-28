@@ -16,8 +16,7 @@ def get_audio_handler():
     youtube_url = f"https://www.youtube.com/watch?v={video_id}"
 
     try:
-        # --- THIS IS THE REQUIRED FIX ---
-        # This tells pytubefix to act like a Web Browser to avoid bot detection.
+        # This is the critical line that fixes the "bot detection" error.
         yt = YouTube(youtube_url, client='WEB')
         
         logging.info(f"Successfully created YouTube object for title: {yt.title}")
